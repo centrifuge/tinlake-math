@@ -10,12 +10,4 @@ contract TinlakeMathTest is DSTest {
     function setUp() public {
         math = new TinlakeMath();
     }
-
-    function testFail_basic_sanity() public {
-        assertTrue(false);
-    }
-
-    function test_basic_sanity() public {
-        assertTrue(true);
-    }
 }
