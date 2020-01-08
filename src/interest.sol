@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Centrifuge, referencing MakerDAO dss => https://github.com/makerdao/dss/blob/master/src/pot.sol
+// Copyright (C) 2018 Rain <rainbreak@riseup.net> and Centrifuge, referencing MakerDAO dss => https://github.com/makerdao/dss/blob/master/src/pot.sol
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
@@ -18,24 +18,40 @@ pragma solidity >=0.5.12;
 import "./math.sol";
 
 contract Interest is Math {
-    // compounding takes in chi (accumulated rate), speed (accumulation per second), rho (when the rate was last updated),
-    // and pie (total debt of all loans with one rate divided by that rate).
-    // Returns the new accumulated rate, as well as the difference between the debt calculated with the old and new accumulated rates.
-    function compounding(uint chi, uint speed, uint48 rho, uint pie) public view returns (uint chi_, uint delta) {
-        // compounding in seconds
+    // @notice This function provides compounding in seconds
+    // @param chi Accumulated interest rate over time
+    // @param speed Interest rate accumulation per second in RAD(10ˆ27)
+    // @param rho When the interest rate was last updated
+    // @param pie Total sum of all amounts accumulating under one interest rate, divided by that rate
+    // @return The new accumulated rate, as well as the difference between the debt calculated with the old and new accumulated rates.
+    // TODO: rename this function
+    function compounding(uint chi, uint speed, uint rho, uint pie) public view returns (uint, uint) {
+        require(now >= rho, "tinlake-math/invalid-timestamp");
         require(chi != 0);
         uint latest = rmul(rpow(speed, now - rho, ONE), chi);
         uint chi_ = sub(latest, chi);
         return (latest, mul(pie, chi_));
     }
 
-    // convert pie to debt amount
-    function fromPie(uint chi, uint pie) public pure returns (uint) {
+    // @notice This function updates chi
+    // @param chi Accumulated interest rate over time
+    // @param speed Interest rate accumulation per second in RAD(10ˆ27)
+    // @param rho When the interest rate was last updated
+    // @return The new accumulated rate
+    function updateChi(uint chi, uint speed, uint rho) public view returns (uint) {
+        if (now >= rho) {
+        chi = rmul(rpow(speed, now - rho, ONE), chi);
+        }
+        return chi;
+    }
+
+    // convert pie to debt/savings amount
+    function toAmount(uint chi, uint pie) public pure returns (uint) {
         return rmul(pie, chi);
     }
 
-    // convert debt amount to pie
-    function toPie(uint chi, uint debt) public pure returns (uint) {
-        return rdiv(debt, chi);
+    // convert debt/savings amount to pie
+    function toPie(uint chi, uint amount) public pure returns (uint) {
+        return rdiv(amount, chi);
     }
 }
