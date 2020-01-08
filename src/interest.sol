@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Centrifuge
+// Copyright (C) 2018 Centrifuge, referencing MakerDAO dss => https://github.com/makerdao/dss/blob/master/src/pot.sol
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
@@ -17,17 +17,16 @@ pragma solidity >=0.5.12;
 
 import "./math.sol";
 
-contract Interest {
+contract Interest is Math {
     // compounding takes in chi (accumulated rate), speed (accumulation per second), rho (when the rate was last updated),
     // and pie (total debt of all loans with one rate divided by that rate).
     // Returns the new accumulated rate, as well as the difference between the debt calculated with the old and new accumulated rates.
     function compounding(uint chi, uint speed, uint48 rho, uint pie) public view returns (uint chi_, uint delta) {
         // compounding in seconds
         require(chi != 0);
-        uint debt = fromPie(chi, pie);
-        uint chi_ = rmul(rpow(speed, now - rho, ONE), chi);
-        delta = fromPie(chi_, pie) - debt;
-        return (chi_, delta);
+        uint latest = rmul(rpow(speed, now - rho, ONE), chi);
+        uint chi_ = sub(latest, chi);
+        return (latest, mul(pie, chi_));
     }
 
     // convert pie to debt amount
