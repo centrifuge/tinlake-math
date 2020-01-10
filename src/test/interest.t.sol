@@ -100,7 +100,7 @@ contract InterestTest is Interest, DSTest {
         assertEq(delta, 0);
         // one day later
         hevm.warp(now + 1 days);
-        (uint chi_, uint delta_) = compounding(chi, rate, cache, pie);
+        (,uint delta_) = compounding(chi, rate, cache, pie);
         assertEq(delta_, 5000000000000000000001603800);
     }
 }
