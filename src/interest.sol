@@ -52,7 +52,7 @@ contract Interest is Math {
 
     // convert debt/savings amount to pie
     function toPie(uint chi, uint amount) public pure returns (uint) {
-        return rdiv(amount, chi);
+        return rdivup(amount, chi);
     }
 
     function rpow(uint x, uint n, uint base) public pure returns (uint z) {
