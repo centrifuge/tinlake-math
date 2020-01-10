@@ -104,7 +104,7 @@ contract InterestTest is Interest, DSTest{
         (uint updatedChi,uint delta_) = compounding(chi, rate, cache, pie);
         uint newAmount = toAmount(pie, updatedChi);
         uint oldAmount = toAmount(pie, chi);
-        assertEq(delta_, 5);
+        assertEq(delta_, 5000000000000000000);
         assertEq(newAmount - oldAmount, delta_);
     }
 }
