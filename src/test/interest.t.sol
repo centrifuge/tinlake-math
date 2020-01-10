@@ -95,7 +95,7 @@ contract InterestTest is Interest, DSTest{
     function testCompounding() public  {
         uint rate = 1000000564701133626865910626; // 5 % day
         uint cache = now;
-        uint pie = toPie(ONE, 100);
+        uint pie = toPie(ONE, 100 ether);
         (uint chi, uint delta) = compounding(ONE, rate, now, pie);
         assertEq(delta, 0);
 
