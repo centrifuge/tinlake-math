@@ -98,11 +98,13 @@ contract InterestTest is Interest, DSTest{
         uint pie = toPie(ONE, 100);
         (uint chi, uint delta) = compounding(ONE, rate, now, pie);
         assertEq(delta, 0);
+
         // one day later
         hevm.warp(now + 1 days);
         (uint updatedChi,uint delta_) = compounding(chi, rate, cache, pie);
+        uint newAmount = toAmount(pie, updatedChi);
+        uint oldAmount = toAmount(pie, chi);
         assertEq(delta_, 5);
-        assert
-        assertEq(toAmount(pie, updatedChi) - toAmount(pie, chi) == delta_);
+        assertEq(newAmount - oldAmount, delta_);
     }
 }

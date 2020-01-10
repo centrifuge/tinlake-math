@@ -28,9 +28,9 @@ contract Interest is Math {
     function compounding(uint chi, uint speed, uint rho, uint pie) public view returns (uint, uint) {
         require(now >= rho, "tinlake-math/invalid-timestamp");
         require(chi != 0);
-        uint latest = rmul(rpow(speed, now - rho, ONE), chi);
-        uint chi_ = sub(latest, chi);
-        return (latest, rmul(pie, chi_));
+        uint updatedChi = rmul(rpow(speed, now - rho, ONE), chi);
+        uint chi_ = sub(updatedChi, chi);
+        return (updatedChi, rmul(pie, chi_));
     }
 
     // @notice This function updates chi
