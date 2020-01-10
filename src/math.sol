@@ -38,7 +38,6 @@ contract Math {
         z = add(mul(x, ONE), y / 2) / y;
     }
 
-
     function rdivup(uint x, uint y) internal pure returns (uint z) {
         // always rounds up
         z = add(mul(x, ONE), sub(y, 1)) / y;
