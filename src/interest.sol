@@ -30,7 +30,7 @@ contract Interest is Math {
         require(chi != 0);
         uint latest = rmul(rpow(speed, now - rho, ONE), chi);
         uint chi_ = sub(latest, chi);
-        return (latest, mul(pie, chi_));
+        return (latest, rmul(pie, chi_));
     }
 
     // @notice This function updates chi

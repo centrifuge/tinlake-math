@@ -16,14 +16,14 @@
 pragma solidity >=0.5.12;
 
 import "ds-test/test.sol";
-import "../interest.sol";
 
+import "../interest.sol";
 
 contract Hevm {
     function warp(uint256) public;
 }
 
-contract InterestTest is Interest, DSTest {
+contract InterestTest is Interest, DSTest{
 
     Hevm hevm;
 
@@ -100,7 +100,9 @@ contract InterestTest is Interest, DSTest {
         assertEq(delta, 0);
         // one day later
         hevm.warp(now + 1 days);
-        (,uint delta_) = compounding(chi, rate, cache, pie);
-        assertEq(delta_, 5000000000000000000001603800);
+        (uint updatedChi,uint delta_) = compounding(chi, rate, cache, pie);
+        assertEq(delta_, 5);
+        assert
+        assertEq(toAmount(pie, updatedChi) - toAmount(pie, chi) == delta_);
     }
 }
