@@ -18,32 +18,34 @@ pragma solidity >=0.5.12;
 contract Math {
     uint256 constant ONE = 10 ** 27;
 
-    function add(uint x, uint y) public pure returns (uint z) {
+    function safeAdd(uint x, uint y) public pure returns (uint z) {
         require((z = x + y) >= x);
     }
 
-    function sub(uint x, uint y) public pure returns (uint z) {
+    function safeSub(uint x, uint y) public pure returns (uint z) {
         require((z = x - y) <= x);
     }
 
-    function mul(uint x, uint y) public pure returns (uint z) {
+    function safeMul(uint x, uint y) public pure returns (uint z) {
         require(y == 0 || (z = x * y) / y == x);
     }
 
+    function safeDiv(uint x, uint y) public pure returns (uint z) {
+        z = x / y;
+    }
+
     function rmul(uint x, uint y) public pure returns (uint z) {
-        z = mul(x, y) / ONE;
+        z = safeMul(x, y) / ONE;
     }
 
     function rdiv(uint x, uint y) public pure returns (uint z) {
-        z = add(mul(x, ONE), y / 2) / y;
+        z = safeAdd(safeMul(x, ONE), y / 2) / y;
     }
 
     function rdivup(uint x, uint y) internal pure returns (uint z) {
         // always rounds up
-        z = add(mul(x, ONE), sub(y, 1)) / y;
+        z = safeAdd(safeMul(x, ONE), safeSub(y, 1)) / y;
     }
 
-    function div(uint x, uint y) public pure returns (uint z) {
-        z = x / y;
-    }
+
 }
