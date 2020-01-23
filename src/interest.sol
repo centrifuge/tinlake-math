@@ -29,7 +29,7 @@ contract Interest is Math {
         require(now >= rho, "tinlake-math/invalid-timestamp");
         require(chi != 0);
         uint updatedChi = rmul(rpow(speed, now - rho, ONE), chi);
-        uint chi_ = sub(updatedChi, chi);
+        uint chi_ = safeSub(updatedChi, chi);
         return (updatedChi, rmul(pie, chi_));
     }
 
