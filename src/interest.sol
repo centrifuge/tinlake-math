@@ -40,9 +40,16 @@ contract Interest is Math {
     // @return The new accumulated rate
     function updateChi(uint chi, uint speed, uint rho) public view returns (uint) {
         if (now >= rho) {
-        chi = rmul(rpow(speed, now - rho, ONE), chi);
+        chi = rmul(calcInterestForPeriod(speed, rho), chi);
         }
         return chi;
+    }
+
+    function calcInterestForPeriod(uint speed, uint rho) public view returns (uint) {
+        if (now >= rho) {
+            return rpow(speed, now - rho, ONE);
+        }
+        return ONE;
     }
 
     // convert pie to debt/savings amount
