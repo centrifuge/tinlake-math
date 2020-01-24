@@ -34,7 +34,7 @@ contract Interest is Math {
     }
 
     // @notice This function updates chi
-    // @param chi Accumulated interest rate over time
+    // @param bearingAmount is the interest bearing amount
     // @param speed Interest rate accumulation per second in RAD(10ˆ27)
     // @param rho When the interest rate was last updated
     // @return The new accumulated rate
