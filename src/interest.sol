@@ -28,7 +28,7 @@ contract Interest is Math {
     function compounding(uint chi, uint speed, uint rho, uint pie) public view returns (uint, uint) {
         require(now >= rho, "tinlake-math/invalid-timestamp");
         require(chi != 0);
-        uint updatedChi = rmul(rpow(speed, now - rho, ONE), chi);
+        uint updatedChi = chargeInterest(chi ,speed, rho);
         uint chi_ = safeSub(updatedChi, chi);
         return (updatedChi, rmul(pie, chi_));
     }
@@ -38,18 +38,11 @@ contract Interest is Math {
     // @param speed Interest rate accumulation per second in RAD(10ˆ27)
     // @param rho When the interest rate was last updated
     // @return The new accumulated rate
-    function updateChi(uint chi, uint speed, uint rho) public view returns (uint) {
+    function chargeInterest(uint bearingAmount, uint speed, uint rho) public view returns (uint) {
         if (now >= rho) {
-        chi = rmul(calcInterestForPeriod(speed, rho), chi);
+            bearingAmount = rmul(rpow(speed, now - rho, ONE), bearingAmount);
         }
-        return chi;
-    }
-
-    function calcInterestForPeriod(uint speed, uint rho) public view returns (uint) {
-        if (now >= rho) {
-            return rpow(speed, now - rho, ONE);
-        }
-        return ONE;
+        return bearingAmount;
     }
 
     // convert pie to debt/savings amount
