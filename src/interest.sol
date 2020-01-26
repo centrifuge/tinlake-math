@@ -20,29 +20,29 @@ import "./math.sol";
 contract Interest is Math {
     // @notice This function provides compounding in seconds
     // @param chi Accumulated interest rate over time
-    // @param speed Interest rate accumulation per second in RAD(10ˆ27)
-    // @param rho When the interest rate was last updated
+    // @param ratePerSecond Interest rate accumulation per second in RAD(10ˆ27)
+    // @param lastUpdated When the interest rate was last updated
     // @param pie Total sum of all amounts accumulating under one interest rate, divided by that rate
     // @return The new accumulated rate, as well as the difference between the debt calculated with the old and new accumulated rates.
     // TODO: rename this function
-    function compounding(uint chi, uint speed, uint rho, uint pie) public view returns (uint, uint) {
-        require(now >= rho, "tinlake-math/invalid-timestamp");
+    function compounding(uint chi, uint ratePerSecond, uint lastUpdated, uint pie) public view returns (uint, uint) {
+        require(block.timestamp >= lastUpdated, "tinlake-math/invalid-timestamp");
         require(chi != 0);
-        uint updatedChi = chargeInterest(chi ,speed, rho);
+        uint updatedChi = chargeInterest(chi ,ratePerSecond, lastUpdated);
         uint chi_ = safeSub(updatedChi, chi);
         return (updatedChi, rmul(pie, chi_));
     }
 
     // @notice This function updates chi
-    // @param bearingAmount is the interest bearing amount
-    // @param speed Interest rate accumulation per second in RAD(10ˆ27)
-    // @param rho When the interest rate was last updated
+    // @param interestBearingAmount is the interest bearing amount
+    // @param ratePerSecond Interest rate accumulation per second in RAD(10ˆ27)
+    // @param lastUpdated When the interest rate was last updated
     // @return The new accumulated rate
-    function chargeInterest(uint bearingAmount, uint speed, uint rho) public view returns (uint) {
-        if (now >= rho) {
-            bearingAmount = rmul(rpow(speed, now - rho, ONE), bearingAmount);
+    function chargeInterest(uint interestBearingAmount, uint ratePerSecond, uint lastUpdated) public view returns (uint) {
+        if (block.timestamp >= lastUpdated) {
+            interestBearingAmount = rmul(rpow(ratePerSecond, block.timestamp - lastUpdated, ONE), interestBearingAmount);
         }
-        return bearingAmount;
+        return interestBearingAmount;
     }
 
     // convert pie to debt/savings amount
