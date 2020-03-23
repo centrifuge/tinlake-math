@@ -118,6 +118,6 @@ contract InterestTest is Interest, DSTest{
         hevm.warp(now + 3 days + 123 seconds);
         (uint latestChi, uint deltaAmount) = compounding(chi, chi, last ,pie);
 
-        assertEq(toAmount(latestChi, pie), safeAdd(amount, deltaAmount));
+        assertEq(toAmount(latestChi, pie) -  toAmount(chi, pie), deltaAmount);
     }
 }
