@@ -44,6 +44,7 @@ contract Math {
     }
 
     function rdivup(uint x, uint y) internal pure returns (uint z) {
+        require(y > 0, "division by zero");
         // always rounds up
         z = safeAdd(safeMul(x, ONE), safeSub(y, 1)) / y;
     }
