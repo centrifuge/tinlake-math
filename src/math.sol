@@ -39,6 +39,7 @@ contract Math {
     }
 
     function rdiv(uint x, uint y) public pure returns (uint z) {
+        require(y > 0, "division by zero");
         z = safeAdd(safeMul(x, ONE), y / 2) / y;
     }
 
