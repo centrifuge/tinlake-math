@@ -28,7 +28,7 @@ contract Interest is Math {
         require(block.timestamp >= lastUpdated, "tinlake-math/invalid-timestamp");
         require(chi != 0);
         // instead of a interestBearingAmount we use a accumulated interest rate index (chi)
-        uint updatedChi = _chargeInterest(chi ,ratePerSecond, lastUpdated);
+        uint updatedChi = _chargeInterest(chi ,ratePerSecond, lastUpdated, block.timestamp);
         uint chi_ = safeSub(updatedChi, chi);
         return (updatedChi, rmul(pie, chi_));
     }
@@ -40,13 +40,13 @@ contract Interest is Math {
     // @return interestBearingAmount + interest
     function chargeInterest(uint interestBearingAmount, uint ratePerSecond, uint lastUpdated) public view returns (uint) {
         if (block.timestamp >= lastUpdated) {
-            interestBearingAmount = _chargeInterest(interestBearingAmount, ratePerSecond, lastUpdated);
+            interestBearingAmount = _chargeInterest(interestBearingAmount, ratePerSecond, lastUpdated, block.timestamp);
         }
         return interestBearingAmount;
     }
 
-    function _chargeInterest(uint interestBearingAmount, uint ratePerSecond, uint lastUpdated) internal view returns (uint) {
-        return rmul(rpow(ratePerSecond, block.timestamp - lastUpdated, ONE), interestBearingAmount);
+    function _chargeInterest(uint interestBearingAmount, uint ratePerSecond, uint lastUpdated, uint current) internal pure returns (uint) {
+        return rmul(rpow(ratePerSecond, current - lastUpdated, ONE), interestBearingAmount);
     }
 
 
