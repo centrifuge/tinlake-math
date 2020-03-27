@@ -107,4 +107,17 @@ contract InterestTest is Interest, DSTest{
         assertEq(delta_, 5000000000000000000);
         assertEq(newAmount - oldAmount, delta_);
     }
+
+    function testCompoundingDeltaAmount() public {
+        uint amount = 10 ether;
+        uint chi = 1000000564701133626865910626; // 5% day
+        uint pie = toPie(chi, amount);
+
+        // random chi increase
+        uint last = now;
+        hevm.warp(now + 3 days + 123 seconds);
+        (uint latestChi, uint deltaAmount) = compounding(chi, chi, last ,pie);
+
+        assertEq(toAmount(latestChi, pie) -  toAmount(chi, pie), deltaAmount);
+    }
 }

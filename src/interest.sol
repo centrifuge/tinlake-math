@@ -29,8 +29,7 @@ contract Interest is Math {
         require(chi != 0);
         // instead of a interestBearingAmount we use a accumulated interest rate index (chi)
         uint updatedChi = _chargeInterest(chi ,ratePerSecond, lastUpdated, block.timestamp);
-        uint chi_ = safeSub(updatedChi, chi);
-        return (updatedChi, rmul(pie, chi_));
+        return (updatedChi, safeSub(rmul(updatedChi, pie), rmul(chi, pie)));
     }
 
     // @notice This function charge interest on a interestBearingAmount
