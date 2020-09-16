@@ -108,6 +108,7 @@ contract InterestTest is Interest, DSTest{
         assertEq(newAmount - oldAmount, delta_);
     }
 
+
     function testCompoundingDeltaAmount() public {
         uint amount = 10 ether;
         uint chi = 1000000564701133626865910626; // 5% day
@@ -119,5 +120,15 @@ contract InterestTest is Interest, DSTest{
         (uint latestChi, uint deltaAmount) = compounding(chi, chi, last ,pie);
 
         assertEq(toAmount(latestChi, pie) -  toAmount(chi, pie), deltaAmount);
+    }
+
+    function testChargeInterest() public {
+        uint amount = 100 ether;
+        uint lastUpdated = now;
+
+        uint ratePerSecond = 1000000564701133626865910626; // 5 % day
+        hevm.warp(now + 1 days);
+        uint updatedAmount = chargeInterest(amount, ratePerSecond, lastUpdated);
+        assertEq(updatedAmount, 105 ether);
     }
 }

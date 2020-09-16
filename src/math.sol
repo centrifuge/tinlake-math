@@ -19,15 +19,15 @@ contract Math {
     uint256 constant ONE = 10 ** 27;
 
     function safeAdd(uint x, uint y) public pure returns (uint z) {
-        require((z = x + y) >= x);
+        require((z = x + y) >= x, "safe-add-failed");
     }
 
     function safeSub(uint x, uint y) public pure returns (uint z) {
-        require((z = x - y) <= x);
+        require((z = x - y) <= x, "safe-sub-failed");
     }
 
     function safeMul(uint x, uint y) public pure returns (uint z) {
-        require(y == 0 || (z = x * y) / y == x);
+        require(y == 0 || (z = x * y) / y == x, "safe-mul-failed");
     }
 
     function safeDiv(uint x, uint y) public pure returns (uint z) {
